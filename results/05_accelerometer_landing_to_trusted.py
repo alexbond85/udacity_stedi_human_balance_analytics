@@ -53,15 +53,17 @@ DropFields_node1702398737360 = DropFields.apply(
 )
 
 # Script generated for node Amazon S3
-AmazonS3_node1702403377136 = glueContext.write_dynamic_frame.from_options(
-    frame=DropFields_node1702398737360,
+AmazonS3_node1702403377136 = glueContext.getSink(
+    path="s3://stedi-lake-house-alex-udacity/accelerometer/trusted/",
     connection_type="s3",
-    format="json",
-    connection_options={
-        "path": "s3://stedi-lake-house-alex-udacity/accelerometer/trusted/",
-        "partitionKeys": [],
-    },
+    updateBehavior="UPDATE_IN_DATABASE",
+    partitionKeys=[],
+    enableUpdateCatalog=True,
     transformation_ctx="AmazonS3_node1702403377136",
 )
-
+AmazonS3_node1702403377136.setCatalogInfo(
+    catalogDatabase="stedi", catalogTableName="accelerometer_trusted"
+)
+AmazonS3_node1702403377136.setFormat("json")
+AmazonS3_node1702403377136.writeFrame(DropFields_node1702398737360)
 job.commit()

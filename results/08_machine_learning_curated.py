@@ -52,15 +52,17 @@ SQLQuery_node1702412755658 = sparkSqlQuery(
 )
 
 # Script generated for node Amazon S3
-AmazonS3_node1702413079038 = glueContext.write_dynamic_frame.from_options(
-    frame=SQLQuery_node1702412755658,
+AmazonS3_node1702413079038 = glueContext.getSink(
+    path="s3://stedi-lake-house-alex-udacity/ml/curated/",
     connection_type="s3",
-    format="json",
-    connection_options={
-        "path": "s3://stedi-lake-house-alex-udacity/ml/curated/",
-        "partitionKeys": [],
-    },
+    updateBehavior="UPDATE_IN_DATABASE",
+    partitionKeys=[],
+    enableUpdateCatalog=True,
     transformation_ctx="AmazonS3_node1702413079038",
 )
-
+AmazonS3_node1702413079038.setCatalogInfo(
+    catalogDatabase="stedi", catalogTableName="ml_curated"
+)
+AmazonS3_node1702413079038.setFormat("json")
+AmazonS3_node1702413079038.writeFrame(SQLQuery_node1702412755658)
 job.commit()
